@@ -51,3 +51,27 @@ export type TileSize = (typeof SIZE_PATTERN)[number]
 export function sizeForRank(rank: number): TileSize {
   return SIZE_PATTERN[rank % SIZE_PATTERN.length]
 }
+
+// Poster-block palette: black, red, cream — cycled with a nudge so it
+// never falls into an obvious repeating pattern.
+export type BlockTone = 'ink' | 'accent' | 'paper'
+const TONE_CYCLE: BlockTone[] = ['ink', 'accent', 'paper', 'ink', 'paper', 'accent', 'ink']
+
+export function toneForIndex(i: number): BlockTone {
+  return TONE_CYCLE[i % TONE_CYCLE.length]
+}
+
+function hashId(id: string): number {
+  let h = 0
+  for (let i = 0; i < id.length; i++) {
+    h = (h << 5) - h + id.charCodeAt(i)
+    h |= 0
+  }
+  return Math.abs(h)
+}
+
+// Deterministic tilt in degrees, between -4 and 4, alternating sign by index.
+export function tiltForTile(id: string, index: number): number {
+  const magnitude = 1.5 + (hashId(id) % 25) / 10 // 1.5–4
+  return index % 2 === 0 ? magnitude : -magnitude
+}

@@ -1,50 +1,62 @@
 import { motion } from 'framer-motion'
-import { Tile, TYPE_LABEL, TileSize, isRecent } from '../lib/types'
+import { Tile, TYPE_LABEL, isRecent, BlockTone, tiltForTile } from '../lib/types'
 
 interface Props {
   tile: Tile
-  size: TileSize
+  index: number
+  tone: BlockTone
   onOpen: (t: Tile) => void
 }
 
-const SIZE_CLASS: Record<TileSize, string> = {
-  hero: 'md:col-span-2 md:row-span-2',
-  wide: 'md:col-span-2',
-  tall: 'md:row-span-2',
-  normal: '',
+const TONE_BG: Record<BlockTone, string> = {
+  ink: 'bg-surface',
+  accent: 'bg-accent',
+  paper: 'bg-paper',
+}
+const TONE_TEXT: Record<BlockTone, string> = {
+  ink: 'text-text',
+  accent: 'text-text',
+  paper: 'text-ink',
+}
+const TONE_SUBTEXT: Record<BlockTone, string> = {
+  ink: 'text-textDim',
+  accent: 'text-white/75',
+  paper: 'text-ink/60',
+}
+const TONE_BADGE: Record<BlockTone, string> = {
+  ink: 'border-accent text-accent',
+  accent: 'border-ink bg-ink text-accent',
+  paper: 'border-ink text-ink',
 }
 
-export default function TileCard({ tile, size, onOpen }: Props) {
+export default function TileCard({ tile, index, tone, onOpen }: Props) {
+  const tilt = tiltForTile(tile.id, index)
+
   return (
     <motion.button
       layoutId={`tile-${tile.id}`}
       onClick={() => onOpen(tile)}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.28, ease: [0.2, 0.9, 0.25, 1] }}
-      className={`group relative flex min-h-[150px] flex-col justify-end overflow-hidden rounded-md border border-border bg-gradient-to-br from-raised to-surface p-6 text-left transition-colors hover:border-accent/70 ${SIZE_CLASS[size]}`}
+      initial={{ rotate: tilt }}
+      whileHover={{ rotate: 0, y: -6, scale: 1.02 }}
+      transition={{ duration: 0.3, ease: [0.2, 0.9, 0.25, 1] }}
+      className={`mb-6 block w-full break-inside-avoid rounded-sm border-2 border-ink/80 p-6 text-left shadow-[6px_6px_0_rgba(0,0,0,0.5)] ${TONE_BG[tone]}`}
+      style={{ transformOrigin: 'center' }}
     >
-      {isRecent(tile) && (
-        <span className="absolute right-5 top-5 text-[10px] tracking-wide text-accent">
-          New
-        </span>
-      )}
-
-      <span className="mb-auto inline-block w-fit rounded-sm border border-border px-2.5 py-1 text-[10px] tracking-wide text-accent">
-        {TYPE_LABEL[tile.type]}
-      </span>
-
-      <div className="mt-5">
-        <p
-          className={`font-display font-medium leading-tight text-text ${
-            size === 'hero' ? 'text-[30px] md:text-[38px]' : 'text-[19px] md:text-[22px]'
-          }`}
+      <div className="flex items-start justify-between gap-3">
+        <span
+          className={`inline-block -rotate-2 border px-2.5 py-1 text-[11px] font-semibold tracking-wide ${TONE_BADGE[tone]}`}
         >
-          {tile.name}
-        </p>
-        <p className="mt-2 max-h-0 overflow-hidden text-[13px] leading-snug text-textDim opacity-0 transition-all duration-300 ease-out group-hover:max-h-20 group-hover:opacity-100">
-          {tile.line}
-        </p>
+          {TYPE_LABEL[tile.type].toUpperCase()}
+        </span>
+        {isRecent(tile) && (
+          <span className={`text-[10px] font-semibold tracking-wide ${TONE_SUBTEXT[tone]}`}>NEW</span>
+        )}
       </div>
+
+      <p className={`mt-5 font-display text-[34px] leading-[0.92] tracking-wide ${TONE_TEXT[tone]}`}>
+        {tile.name}
+      </p>
+      <p className={`mt-3 text-[13.5px] leading-snug ${TONE_SUBTEXT[tone]}`}>{tile.line}</p>
     </motion.button>
   )
 }

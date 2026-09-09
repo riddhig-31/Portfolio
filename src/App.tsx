@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { supabase } from './lib/supabaseClient'
 import { Tile } from './lib/types'
-import Header from './components/Header'
+import NavBar from './components/NavBar'
 import TileGrid from './components/TileGrid'
 import TileModal from './components/TileModal'
 import AddTileForm from './components/AddTileForm'
-import AuthBar from './components/AuthBar'
+import AddButton from './components/AddButton'
+import LoginModal from './components/LoginModal'
+import IntroModal from './components/IntroModal'
+import AboutModal from './components/AboutModal'
+import MeetModal from './components/MeetModal'
 
 export default function App() {
   const [tiles, setTiles] = useState<Tile[]>([])
@@ -14,8 +18,16 @@ export default function App() {
   const [session, setSession] = useState(false)
   const [selected, setSelected] = useState<Tile | null>(null)
   const [adding, setAdding] = useState(false)
+  const [loggingIn, setLoggingIn] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
+  const [showMeet, setShowMeet] = useState(false)
+  const [showIntro, setShowIntro] = useState(false)
 
   useEffect(() => {
+    if (!localStorage.getItem('intro-seen')) {
+      setShowIntro(true)
+    }
+
     supabase
       .from('tiles')
       .select('*')
@@ -45,23 +57,35 @@ export default function App() {
     }
   }, [])
 
+  function dismissIntro() {
+    localStorage.setItem('intro-seen', '1')
+    setShowIntro(false)
+  }
+
   return (
     <div className="min-h-screen">
-      <Header />
+      <NavBar
+        session={session}
+        onLogin={() => setLoggingIn(true)}
+        onLogout={() => supabase.auth.signOut()}
+        onAbout={() => setShowAbout(true)}
+        onMeet={() => setShowMeet(true)}
+      />
       {!loading && <TileGrid tiles={tiles} onOpen={setSelected} />}
 
-      <footer className="border-t border-border px-[6vw] py-8 text-center text-[11px] text-textDim">
-        Updated in real time · built and edited entirely with Claude
+      <footer className="border-t-2 border-ink px-[6vw] py-8 text-center text-[11px] tracking-wide text-textDim">
+        UPDATED IN REAL TIME · BUILT AND EDITED ENTIRELY WITH CLAUDE
       </footer>
 
-      <AuthBar session={session} onAdd={() => setAdding(true)} />
+      {session && <AddButton onClick={() => setAdding(true)} />}
 
+      <AnimatePresence>{showIntro && <IntroModal onClose={dismissIntro} />}</AnimatePresence>
+      <AnimatePresence>{showAbout && <AboutModal onClose={() => setShowAbout(false)} />}</AnimatePresence>
+      <AnimatePresence>{showMeet && <MeetModal onClose={() => setShowMeet(false)} />}</AnimatePresence>
+      <AnimatePresence>{loggingIn && <LoginModal onClose={() => setLoggingIn(false)} />}</AnimatePresence>
       <AnimatePresence>
-        {selected && (
-          <TileModal tile={selected} canEdit={session} onClose={() => setSelected(null)} />
-        )}
+        {selected && <TileModal tile={selected} canEdit={session} onClose={() => setSelected(null)} />}
       </AnimatePresence>
-
       <AnimatePresence>{adding && <AddTileForm onClose={() => setAdding(false)} />}</AnimatePresence>
     </div>
   )

@@ -1,5 +1,6 @@
-import { Tile, computeScore, sizeForRank } from '../lib/types'
+import { Tile, computeScore, toneForIndex } from '../lib/types'
 import TileCard from './TileCard'
+import HeroTile from './HeroTile'
 
 interface Props {
   tiles: Tile[]
@@ -17,11 +18,16 @@ export default function TileGrid({ tiles, onOpen }: Props) {
     )
   }
 
+  const [hero, ...rest] = sorted
+
   return (
-    <main className="grid auto-rows-[150px] grid-cols-1 gap-5 px-[6vw] py-9 md:grid-cols-4">
-      {sorted.map((tile, i) => (
-        <TileCard key={tile.id} tile={tile} size={sizeForRank(i)} onOpen={onOpen} />
-      ))}
+    <main className="px-[6vw] py-10">
+      <HeroTile tile={hero} onOpen={onOpen} />
+      <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
+        {rest.map((tile, i) => (
+          <TileCard key={tile.id} tile={tile} index={i} tone={toneForIndex(i)} onOpen={onOpen} />
+        ))}
+      </div>
     </main>
   )
 }
