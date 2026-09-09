@@ -41,6 +41,25 @@ create policy "Authenticated can delete tiles"
 -- Enable realtime updates for this table
 alter publication supabase_realtime add table public.tiles;
 
+-- Storage bucket for uploaded files (PPTs, PDFs, images, etc.) attached to tiles.
+insert into storage.buckets (id, name, public)
+values ('tile-files', 'tile-files', true)
+on conflict (id) do nothing;
+
+create policy "Public can read tile files"
+  on storage.objects for select
+  using (bucket_id = 'tile-files');
+
+create policy "Authenticated can upload tile files"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'tile-files');
+
+create policy "Authenticated can delete tile files"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'tile-files');
+
 -- Seed with your current work — edit freely, or delete and add your own via the site.
 insert into public.tiles (name, type, line, description, importance, is_constant, published_at) values
 (

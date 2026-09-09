@@ -13,6 +13,7 @@ export default function AddTileForm({ onClose }: Props) {
   const [line, setLine] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
+  const [file, setFile] = useState<File | null>(null)
   const [importance, setImportance] = useState(3)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -21,12 +22,27 @@ export default function AddTileForm({ onClose }: Props) {
     e.preventDefault()
     setBusy(true)
     setError('')
+
+    let finalUrl = url
+
+    if (file) {
+      const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
+      const { error: uploadError } = await supabase.storage.from('tile-files').upload(path, file)
+      if (uploadError) {
+        setBusy(false)
+        setError(uploadError.message)
+        return
+      }
+      const { data } = supabase.storage.from('tile-files').getPublicUrl(path)
+      finalUrl = data.publicUrl
+    }
+
     const { error } = await supabase.from('tiles').insert({
       name,
       type,
       line,
       description,
-      url,
+      url: finalUrl,
       importance,
       is_constant: false,
       published_at: new Date().toISOString(),
@@ -117,7 +133,7 @@ export default function AddTileForm({ onClose }: Props) {
           className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
         />
 
-        <label className="mb-1.5 mt-4 block text-[12px] text-textDim">Link (optional)</label>
+        <label className="mb-1.5 mt-4 block text-[12px] text-textDim">Link (optional, skip if uploading a file)</label>
         <input
           type="url"
           value={url}
@@ -126,6 +142,14 @@ export default function AddTileForm({ onClose }: Props) {
           className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
         />
 
+        <label className="mb-1.5 mt-4 block text-[12px] text-textDim">Or upload a file (PPT, PDF, image…)</label>
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13px] text-textDim outline-none focus:border-accent"
+        />
+        {file && <p className="mt-1.5 text-[11.5px] text-textDim">Selected: {file.name}</p>}
+
         {error && <p className="mt-3 text-[12px] text-burgundy">{error}</p>}
 
         <button
@@ -133,7 +157,7 @@ export default function AddTileForm({ onClose }: Props) {
           disabled={busy}
           className="mt-7 w-full rounded-sm bg-accent py-2.5 text-[13px] font-medium text-ink disabled:opacity-50"
         >
-          {busy ? 'Publishing…' : 'Publish entry'}
+          {busy ? (file ? 'Uploading…' : 'Publishing…') : 'Publish entry'}
         </button>
       </motion.form>
     </motion.div>
