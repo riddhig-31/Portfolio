@@ -1,13 +1,14 @@
-import { Tile, computeScore, toneForIndex } from '../lib/types'
+import { Tile, computeScore } from '../lib/types'
 import TileCard from './TileCard'
 import HeroTile from './HeroTile'
 
 interface Props {
   tiles: Tile[]
   onOpen: (t: Tile) => void
+  onNavigate: (path: string) => void
 }
 
-export default function TileGrid({ tiles, onOpen }: Props) {
+export default function TileGrid({ tiles, onOpen, onNavigate }: Props) {
   const sorted = [...tiles].sort((a, b) => computeScore(b) - computeScore(a))
 
   if (sorted.length === 0) {
@@ -23,9 +24,9 @@ export default function TileGrid({ tiles, onOpen }: Props) {
   return (
     <main className="px-[6vw] py-10">
       <HeroTile tile={hero} onOpen={onOpen} />
-      <div className="columns-1 gap-6 sm:columns-2 lg:columns-3">
+      <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
         {rest.map((tile, i) => (
-          <TileCard key={tile.id} tile={tile} index={i} tone={toneForIndex(i)} onOpen={onOpen} />
+          <TileCard key={tile.id} tile={tile} index={i} onOpen={onOpen} onNavigate={onNavigate} />
         ))}
       </div>
     </main>

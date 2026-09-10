@@ -9,20 +9,20 @@ interface Props {
 export default function HeroTile({ tile, onOpen }: Props) {
   return (
     <motion.button
-      layoutId={`tile-${tile.id}`}
       onClick={() => onOpen(tile)}
-      initial={{ rotate: -1.2 }}
-      whileHover={{ rotate: 0, y: -6 }}
-      transition={{ duration: 0.3, ease: [0.2, 0.9, 0.25, 1] }}
-      className="mb-10 block w-full rounded-sm border-2 border-ink bg-accent p-8 text-left shadow-[10px_10px_0_rgba(0,0,0,0.55)] md:p-12"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.5, ease: [0.2, 0.65, 0.3, 1] }}
+      className="mb-5 block w-full rounded-[8px] border border-border bg-raised p-8 text-left shadow-[0_1px_2px_rgba(34,31,28,0.06)] transition-shadow duration-200 ease-out hover:shadow-[0_8px_22px_rgba(34,31,28,0.10)] md:p-10"
     >
-      <span className="inline-block rotate-1 border border-ink bg-ink px-3 py-1.5 text-[12px] font-semibold tracking-wide text-accent">
-        {TYPE_LABEL[tile.type].toUpperCase()}
+      <span className="text-[11px] font-medium uppercase tracking-wide text-accent">
+        {TYPE_LABEL[tile.type]}
       </span>
-      <p className="mt-6 font-display text-[56px] leading-[0.9] tracking-wide text-text md:text-[88px]">
+      <p className="mt-4 font-display text-[42px] font-medium leading-[1.05] text-ink md:text-[52px]">
         {tile.name}
       </p>
-      <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-white/80">{tile.line}</p>
+      <p className="mt-3 max-w-lg text-[14.5px] leading-relaxed text-textDim">{tile.line}</p>
     </motion.button>
   )
 }

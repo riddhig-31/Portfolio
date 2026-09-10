@@ -61,7 +61,7 @@ export default function AddTileForm({ onClose }: Props) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm"
     >
       <motion.form
         onSubmit={submit}
@@ -69,10 +69,10 @@ export default function AddTileForm({ onClose }: Props) {
         initial={{ opacity: 0, y: 10, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.25, ease: [0.2, 0.9, 0.25, 1] }}
-        className="max-h-[86vh] w-full max-w-lg overflow-y-auto rounded-md border border-border bg-surface p-9"
+        className="max-h-[86vh] w-full max-w-lg overflow-y-auto rounded-[8px] border border-border bg-surface p-9 shadow-[0_20px_50px_rgba(34,31,28,0.18)]"
       >
         <div className="mb-2 flex items-start justify-between">
-          <p className="font-display text-xl text-text">New entry</p>
+          <p className="font-display text-xl text-ink">New entry</p>
           <button type="button" onClick={onClose} className="text-xl leading-none text-textDim hover:text-accent">
             &times;
           </button>
@@ -84,7 +84,7 @@ export default function AddTileForm({ onClose }: Props) {
           maxLength={70}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
+          className="w-full rounded-[6px] border border-border bg-paper px-3 py-2.5 text-[13.5px] text-ink outline-none focus:border-accent"
         />
 
         <div className="mt-4 flex gap-4">
@@ -93,7 +93,7 @@ export default function AddTileForm({ onClose }: Props) {
             <select
               value={type}
               onChange={(e) => setType(e.target.value as TileType)}
-              className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
+              className="w-full rounded-[6px] border border-border bg-paper px-3 py-2.5 text-[13.5px] text-ink outline-none focus:border-accent"
             >
               <option value="project">Project</option>
               <option value="ai">AI project</option>
@@ -101,6 +101,9 @@ export default function AddTileForm({ onClose }: Props) {
               <option value="brand">Brand</option>
               <option value="doc">Document</option>
               <option value="note">Currently</option>
+              <option value="about">About</option>
+              <option value="stats">Snapshot / stats</option>
+              <option value="contact">Contact</option>
             </select>
           </div>
           <div className="w-28">
@@ -111,7 +114,7 @@ export default function AddTileForm({ onClose }: Props) {
               max={5}
               value={importance}
               onChange={(e) => setImportance(Number(e.target.value))}
-              className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
+              className="w-full rounded-[6px] border border-border bg-paper px-3 py-2.5 text-[13.5px] text-ink outline-none focus:border-accent"
             />
           </div>
         </div>
@@ -122,7 +125,7 @@ export default function AddTileForm({ onClose }: Props) {
           maxLength={100}
           value={line}
           onChange={(e) => setLine(e.target.value)}
-          className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
+          className="w-full rounded-[6px] border border-border bg-paper px-3 py-2.5 text-[13.5px] text-ink outline-none focus:border-accent"
         />
 
         <label className="mb-1.5 mt-4 block text-[12px] text-textDim">Full detail (optional)</label>
@@ -130,7 +133,7 @@ export default function AddTileForm({ onClose }: Props) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
-          className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
+          className="w-full rounded-[6px] border border-border bg-paper px-3 py-2.5 text-[13.5px] text-ink outline-none focus:border-accent"
         />
 
         <label className="mb-1.5 mt-4 block text-[12px] text-textDim">Link (optional, skip if uploading a file)</label>
@@ -139,14 +142,14 @@ export default function AddTileForm({ onClose }: Props) {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://…"
-          className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13.5px] text-text outline-none focus:border-accent"
+          className="w-full rounded-[6px] border border-border bg-paper px-3 py-2.5 text-[13.5px] text-ink outline-none focus:border-accent"
         />
 
         <label className="mb-1.5 mt-4 block text-[12px] text-textDim">Or upload a file (PPT, PDF, image…)</label>
         <input
           type="file"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          className="w-full rounded-sm border border-border bg-ink px-3 py-2.5 text-[13px] text-textDim outline-none focus:border-accent"
+          className="w-full rounded-[6px] border border-border bg-paper px-3 py-2.5 text-[13px] text-textDim outline-none focus:border-accent"
         />
         {file && <p className="mt-1.5 text-[11.5px] text-textDim">Selected: {file.name}</p>}
 
@@ -155,7 +158,7 @@ export default function AddTileForm({ onClose }: Props) {
         <button
           type="submit"
           disabled={busy}
-          className="mt-7 w-full rounded-sm bg-accent py-2.5 text-[13px] font-medium text-ink disabled:opacity-50"
+          className="mt-7 w-full rounded-[6px] bg-accent py-2.5 text-[13px] font-medium text-paper disabled:opacity-50"
         >
           {busy ? (file ? 'Uploading…' : 'Publishing…') : 'Publish entry'}
         </button>

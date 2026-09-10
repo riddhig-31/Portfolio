@@ -11,25 +11,25 @@ export default function MeetModal({ onClose }: Props) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/85 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm"
     >
       <motion.div
-        initial={{ opacity: 0, y: 10, rotate: -1 }}
-        animate={{ opacity: 1, y: 0, rotate: 0 }}
+        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         onClick={(e) => e.stopPropagation()}
         transition={{ duration: 0.25 }}
-        className="max-h-[82vh] w-full max-w-md overflow-y-auto border-2 border-ink bg-accent p-9 text-text shadow-[8px_8px_0_rgba(0,0,0,0.6)]"
+        className="max-h-[82vh] w-full max-w-md overflow-y-auto rounded-[8px] border border-border bg-surface p-9 shadow-[0_20px_50px_rgba(34,31,28,0.18)]"
       >
         <div className="mb-4 flex items-start justify-between">
-          <span className="inline-block rotate-2 border border-ink bg-ink px-3 py-1 text-[11px] font-semibold tracking-wide text-accent">
-            LET'S MEET
+          <span className="text-[11px] font-medium uppercase tracking-wide text-accent">
+            Let's meet
           </span>
-          <button onClick={onClose} className="text-xl leading-none text-white/70 hover:text-white">
+          <button onClick={onClose} className="text-xl leading-none text-textDim hover:text-accent">
             &times;
           </button>
         </div>
-        <p className="font-display text-[38px] leading-[0.9] tracking-wide">Placeholder</p>
-        <p className="mt-4 text-[14px] leading-relaxed text-white/80">
+        <p className="font-display text-[28px] font-medium text-ink">Placeholder</p>
+        <p className="mt-4 text-[14px] leading-relaxed text-textDim">
           Drop your real scheduling link, email, or Calendly embed here once
           it's ready. For now this is a stand-in.
         </p>

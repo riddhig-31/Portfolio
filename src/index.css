@@ -12,33 +12,33 @@ html {
 
 body {
   margin: 0;
-  background: #0a0a0a;
-  color: #f5f0e6;
+  background: #faf6ee;
+  color: #221f1c;
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #e11b22;
-  color: #f5f0e6;
+  background: #b5622a;
+  color: #faf6ee;
 }
 
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0e0c0a;
+  background: #faf6ee;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a231a;
+  background: #e4dcc9;
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a2f20;
+  background: #d5c9ac;
 }
 
 :focus-visible {
-  outline: 1.5px solid #e11b22;
+  outline: 1.5px solid #b5622a;
   outline-offset: 3px;
 }
 

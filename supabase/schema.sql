@@ -104,3 +104,56 @@ insert into public.tiles (name, type, line, description, importance, is_constant
   'Go-to-market strategy for goSTOPS built around a monsoon-season experiential travel circuit.',
   3, false, now() - interval '2 months'
 );
+
+-- ============================================================
+-- Migration: redesign to restrained light theme + new tile types
+-- Run this once against a table created with the original schema above.
+-- ============================================================
+
+alter table public.tiles drop constraint if exists tiles_type_check;
+alter table public.tiles add constraint tiles_type_check
+  check (type in ('project','ai','post','brand','doc','note','about','stats','contact'));
+
+-- "Currently up to" (the MU note) becomes dynamic, not constant, per the new structure.
+update public.tiles set is_constant = false where name like 'Master''s Union%';
+
+-- The five constant tiles: About Me, Resume, Sector Maps, Quick Stats, Contact.
+insert into public.tiles (name, type, line, description, url, importance, is_constant, published_at) values
+(
+  'About',
+  'about',
+  'Trained as an architect, fell into product by accident. Two months into building a perfume brand that''s already sold out twice.',
+  null, null, 5, true, now()
+),
+(
+  'Resume',
+  'doc',
+  'RAC-format, consulting-ready, no jargon.',
+  'Written in Result → Action → Context format, using generalist business language throughout.',
+  '/resume.pdf', 4, true, now()
+),
+(
+  'Sector Maps',
+  'doc',
+  'Landscape maps of Defense Tech and AECO.',
+  'Upload your sector map files via Supabase Storage, then paste the public URL here (edit this row directly in the Table Editor since it''s a constant tile).',
+  null, 4, true, now()
+),
+(
+  'Quick Stats',
+  'stats',
+  '',
+  '3.5 years in product
+2 industries crossed — architecture to tech
+1 brand started — unOkhi',
+  null, 4, true, now()
+),
+(
+  'Contact',
+  'contact',
+  '',
+  'Email riddhi31gupta@gmail.com
+Phone +91 87665 76237
+Instagram @its.riddhi.gupta',
+  null, 4, true, now()
+);
